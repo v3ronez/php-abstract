@@ -3,7 +3,7 @@
   "displayName": "PHPAbstract",
   "description": "Generate new methods in your php file",
  "icon": "img/icon.png",
-  "publisher": "Henrique Veronez",
+  "publisher": "PHPAbstract",
   "author": {
     "name": "Henrique Veronez",
     "email": "v3ronez.dev@gmail.com"
@@ -43,10 +43,10 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "pnpm run compile",
+    "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "pretest": "pnpm run compile && pnpm run lint",
+    "pretest": "npm run compile && npm run lint",
     "lint": "eslint src",
     "test": "vscode-test"
   },
