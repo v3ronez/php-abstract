@@ -1,15 +1,38 @@
 {
-  "name": "phpabstract",
+  "name": "php-abstract",
   "displayName": "PHPAbstract",
-  "description": "",
-  "version": "0.0.1",
+  "description": "Generate new methods in your php file",
+ "icon": "img/icon.png",
+  "publisher": "Henrique Veronez",
+  "author": {
+    "name": "Henrique Veronez",
+    "email": "v3ronez.dev@gmail.com"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/v3ronez/php-abstract",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/v3ronez/php-abstract"
+  },
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.94.0"
   },
   "categories": [
-    "Other"
+    "Snippets",
+    "Other",
+    "Programming Languages"
   ],
-  "activationEvents": [],
+  "keywords": [
+    "php",
+    "refactory",
+    "php abstract",
+    "php method",
+    "abstract",
+    "php method generate"
+  ],
+  "activationEvents": [
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
