@@ -3,18 +3,18 @@ import { MethodVisibility } from "../Enums/MethodVisibility";
 import BaseMethod from "./BaseMethod";
 export default class AbstractMethod extends BaseMethod {
 	async execute() {
-		const editor = this.getActiveEditor();
-		if (!editor) {
+		if (!this.editor) {
 			return;
 		}
-		const document = this.getActiveDocument();
-		if (!document) {
+		if (!this.document) {
 			return;
 		}
-		const methodName =
-			(await this.generateMethodName(document)) ?? "methodName";
+		const methodName = (await this.generateMethodName()) ?? "methodName";
 
-		const lineToAddNewMethod = this.getLineToInsertMethod(document);
+		const lineToAddNewMethod = this.getLineToInsertMethod();
+		if (!lineToAddNewMethod) {
+			return;
+		}
 		await this.insertNewMethod(methodName, lineToAddNewMethod);
 	}
 
@@ -30,24 +30,57 @@ export default class AbstractMethod extends BaseMethod {
 		});
 	}
 
-	getLineToInsertMethod(document: vscode.TextDocument) {
-		let currentLine = this.getCurrentLine();
-		if (!currentLine) {
-			return document.lineCount - 1;
-		}
-		for (currentLine; currentLine < document.lineCount - 1; currentLine++) {
-			const textLine = document.lineAt(currentLine).text.trim();
-			if (/\}/.test(textLine)) {
-				return currentLine + 2;
-			}
-		}
-		return document.lineCount - 1;
+	getLineToInsertMethod() {
+		return this.getLastEndOfLastFunction();
+		//[TODO] HOW TO GET THE LAST BRACKET OF CURRENT FUNCTION?
+		// if (!this.document) {
+		// 	return;
+		// }
+		// let currentLine = this.getCurrentLine();
+		// if (!currentLine) {
+		// 	return this.document.lineCount - 1;
+		// }
+		// for (currentLine; currentLine > 0; currentLine--) {
+		// 	const textLine = this.document.lineAt(currentLine).text.trim();
+		// 	const match = textLine.match(/function\s+(\w+)\s*\(/);
+		// 	if (match) {
+		// 		const currentMethodName = match[1];
+		// 		return this.getEndOfCurrentMethod(currentMethodName);
+		// 	}
+		// }
+		// return this.getLastEndOfLastFunction();
 	}
 
-	async generateMethodName(document: vscode.TextDocument) {
-		const doc = await vscode.workspace.openTextDocument(document.uri);
+	async getEndOfCurrentMethod(currentMethodName: string) {
+		if (!this.document) {
+			return;
+		}
+		const symbols = await vscode.commands.executeCommand(
+			"vscode.executeDocumentSymbolProvider",
+			this.document?.uri,
+		);
+		if (!symbols) {
+			return;
+		}
+		//@ts-ignore
+		const childrens = symbols[1].children as Array<vscode.DocumentSymbol>;
+		for (const child of childrens) {
+			if (
+				child.kind === vscode.SymbolKind.Method &&
+				child.name === currentMethodName
+			) {
+				return child.range.end.line;
+			}
+		}
+	}
+
+	async generateMethodName() {
+		if (!this.document) {
+			return;
+		}
+		const doc = await vscode.workspace.openTextDocument(this.document.uri);
 		const currentPosition = this.getActiveEditor();
-		const methodName = document.getText(currentPosition?.selection);
+		const methodName = this.document.getText(currentPosition?.selection);
 		if (!methodName) {
 			const position = currentPosition?.selection.active.line;
 			if (!position) {
@@ -78,11 +111,13 @@ export default class AbstractMethod extends BaseMethod {
 	async generateStaticMethod(currentLine: string) {
 		const regexToGetMethodName = /self::([^()]+)\(/;
 		const match = currentLine.match(regexToGetMethodName);
-		const document = this.getActiveDocument();
-		if (!document) {
+		if (!this.document) {
 			return;
 		}
-		const line = this.getLineToInsertMethod(document);
+		const line = this.getLineToInsertMethod();
+		if (!line) {
+			return;
+		}
 		if (!match) {
 			return this.insertNewMethod("methodName", line, MethodVisibility.PUBLIC);
 		}
