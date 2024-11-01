@@ -3,12 +3,6 @@ import { MethodVisibility } from "../Enums/MethodVisibility";
 import BaseMethod from "./BaseMethod";
 export default class AbstractMethod extends BaseMethod {
 	async execute() {
-		if (!this.editor) {
-			return;
-		}
-		if (!this.document) {
-			return;
-		}
 		const methodName = (await this.generateMethodName()) ?? "methodName";
 
 		const lineToAddNewMethod = this.getLineToInsertMethod();
@@ -31,47 +25,22 @@ export default class AbstractMethod extends BaseMethod {
 	}
 
 	getLineToInsertMethod() {
-		return this.getLastEndOfLastFunction();
 		//[TODO] HOW TO GET THE LAST BRACKET OF CURRENT FUNCTION?
-		// if (!this.document) {
-		// 	return;
-		// }
-		// let currentLine = this.getCurrentLine();
-		// if (!currentLine) {
-		// 	return this.document.lineCount - 1;
-		// }
-		// for (currentLine; currentLine > 0; currentLine--) {
-		// 	const textLine = this.document.lineAt(currentLine).text.trim();
-		// 	const match = textLine.match(/function\s+(\w+)\s*\(/);
-		// 	if (match) {
-		// 		const currentMethodName = match[1];
-		// 		return this.getEndOfCurrentMethod(currentMethodName);
-		// 	}
-		// }
-		// return this.getLastEndOfLastFunction();
-	}
-
-	async getEndOfCurrentMethod(currentMethodName: string) {
 		if (!this.document) {
 			return;
 		}
-		const symbols = await vscode.commands.executeCommand(
-			"vscode.executeDocumentSymbolProvider",
-			this.document?.uri,
-		);
-		if (!symbols) {
-			return;
+		let currentLine = this.getCurrentLine();
+		if (!currentLine) {
+			return this.document.lineCount - 1;
 		}
-		//@ts-ignore
-		const childrens = symbols[1].children as Array<vscode.DocumentSymbol>;
-		for (const child of childrens) {
-			if (
-				child.kind === vscode.SymbolKind.Method &&
-				child.name === currentMethodName
-			) {
-				return child.range.end.line;
+		for (currentLine; currentLine < this.document.lineCount; currentLine++) {
+			const textLine = this.document.lineAt(currentLine).text.trim();
+			const match = textLine.match(/\bfunction\b|\/\*|#\[/);
+			if (match) {
+				return currentLine;
 			}
 		}
+		return this.getLastEndOfLastFunction();
 	}
 
 	async generateMethodName() {

@@ -1,64 +1,66 @@
 {
-  "name": "php-abstract",
-  "displayName": "PHPAbstract",
-  "description": "Generate new methods in your php file",
- "icon": "img/icon.png",
-  "publisher": "PHPAbstract",
-  "author": {
-    "name": "Henrique Veronez",
-    "email": "v3ronez.dev@gmail.com"
-  },
-  "license": "MIT",
-  "homepage": "https://github.com/v3ronez/php-abstract",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/v3ronez/php-abstract"
-  },
-  "version": "1.0.0",
-  "engines": {
-    "vscode": "^1.94.0"
-  },
-  "categories": [
-    "Snippets",
-    "Other",
-    "Programming Languages"
-  ],
-  "keywords": [
-    "php",
-    "refactory",
-    "php abstract",
-    "php method",
-    "abstract",
-    "php method generate"
-  ],
-  "activationEvents": [
-  ],
-  "main": "./out/extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "phpabstract.generateMethod",
-        "title": "Generate method"
-      }
-    ]
-  },
-  "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
-    "lint": "eslint src",
-    "test": "vscode-test"
-  },
-  "devDependencies": {
-    "@types/vscode": "^1.94.0",
-    "@types/mocha": "^10.0.9",
-    "@types/node": "20.x",
-    "@typescript-eslint/eslint-plugin": "^8.10.0",
-    "@typescript-eslint/parser": "^8.7.0",
-    "eslint": "^9.13.0",
-    "typescript": "^5.6.3",
-    "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.4.1"
-  }
+	"name": "php-abstract",
+	"displayName": "PHPAbstract",
+	"description": "Generate new methods in your php file",
+	"icon": "img/icon.png",
+	"publisher": "PHPAbstract",
+	"author": {
+		"name": "Henrique Veronez",
+		"email": "v3ronez.dev@gmail.com"
+	},
+	"license": "MIT",
+	"homepage": "https://github.com/v3ronez/php-abstract",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/v3ronez/php-abstract"
+	},
+	"version": "1.1.0",
+	"engines": {
+		"vscode": "^1.94.0"
+	},
+	"categories": ["Snippets", "Other", "Programming Languages"],
+	"keywords": [
+		"php",
+		"refactory",
+		"php abstract",
+		"php method",
+		"abstract",
+		"php method generate"
+	],
+	"activationEvents": ["onLanguage:php"],
+	"main": "./out/extension.js",
+	"contributes": {
+		"languages": [
+			{
+				"id": "php",
+				"aliases": ["PHP", "php"],
+				"extensions": [".php"]
+			}
+		],
+		"commands": [
+			{
+				"command": "phpabstract.generateMethod",
+				"title": "Generate method"
+			}
+		]
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"pretest": "npm run compile && npm run lint",
+		"lint": "eslint src",
+		"test": "vscode-test"
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.94.0",
+		"@types/mocha": "^10.0.9",
+		"@types/node": "20.x",
+		"@typescript-eslint/eslint-plugin": "^8.10.0",
+		"@typescript-eslint/parser": "^8.7.0",
+		"eslint": "^9.13.0",
+		"typescript": "^5.6.3",
+		"@vscode/test-cli": "^0.0.10",
+		"@vscode/test-electron": "^2.4.1"
+	}
 }
